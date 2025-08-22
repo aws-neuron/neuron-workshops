@@ -19,8 +19,8 @@ docker pull 763104351884.dkr.ecr.us-east-2.amazonaws.com/pytorch-training-neuron
 clone the repo and go to the folder:
 ```bash
 cd ~
-git clone https://github.com/aws-samples/awsome-distributed-training/
-cd awsome-distributed-training/3.test_cases/pytorch/neuronx-distributed/llama3/kubernetes
+git clone https://github.com/aws-neuron/neuron-workshops
+cd neuron-workshops/labs/Hyperpod
 ```
 
 We will build docker image using the Dockerfile in this directory.
