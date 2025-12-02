@@ -36,6 +36,78 @@ If you are participating in an instructor-led workshop hosted in an AWS-managed 
 
 At the time of writing, this workshop uses a trn1.2xlarge instance with an on-demand hourly rate in supported US regions of $1.34 per hour. The fine tuning workshop requires less than an hour of ml.trn1.2xlarge at $1.54 per hour, and an ml.inf2.xlarge at $0.99 per hour. Please ensure you delete the resources when you are finished.
 
+
+## How to Make a Submission
+
+### Prerequisites
+Before making a submission, ensure you have:
+
+✅ Accepted the Challenge Rules on the challenge page by clicking the Participate button  
+✅ Installed AIcrowd CLI (included in requirements.txt)  
+✅ Logged in to AIcrowd via the CLI  
+✅ Prepared your model on Hugging Face  
+✅ Created a prompt template for your agent
+
+### Step 1: Login to AIcrowd
+First, authenticate with AIcrowd:
+
+```
+aicrowd login
+```
+
+You'll be prompted to enter your AIcrowd API key. You can find your API key at: https://www.aicrowd.com/participants/me
+
+### Step 2: Prepare Your Model on Hugging Face
+Your model must be hosted on Hugging Face. You can use:
+
+- A public model (e.g., Qwen/Qwen3-0.6B)
+- Your own fine-tuned model
+- A private/gated model (requires additional setup - see below)
+
+#### Using Private or Gated Models
+If your model is private or gated, you need to grant AIcrowd access. See docs/huggingface-gated-models.md for detailed instructions.
+
+### Step 3: Create Your Prompt Template
+Your prompt template should be a Jinja file that formats the chess position and legal moves for your model. Examples are available in the player_agents/ directory:
+
+- llm_agent_prompt_template.jinja - For general LLM agents
+- sft_agent_prompt_template.jinja - For supervised fine-tuned agents
+- random_agent_prompt_template.jinja - Minimal template example
+
+### Step 4: Configure Your Submission
+Edit the aicrowd_submit.sh file with your submission details:
+
+```bash
+# Configuration variables
+CHALLENGE="global-chess-challenge-2025"
+HF_REPO="YOUR_HF_USERNAME/YOUR_MODEL_NAME"  # e.g., "Qwen/Qwen3-0.6B"
+HF_REPO_TAG="main"  # or specific branch/tag
+PROMPT_TEMPLATE="player_agents/YOUR_PROMPT_TEMPLATE.jinja"
+```
+
+Configuration Parameters:
+- **CHALLENGE**: The challenge identifier (keep as global-chess-challenge-2025)
+- **HF_REPO**: Your Hugging Face model repository (format: username/model-name)
+- **HF_REPO_TAG**: The branch or tag to use (typically main)
+- **PROMPT_TEMPLATE**: Path to your prompt template file
+
+### Step 5: Submit Your Model
+Once configured, run the submission script:
+
+```bash
+bash aicrowd_submit.sh
+```
+
+Or submit directly using the AIcrowd CLI:
+
+```bash
+aicrowd submit-model \
+    --challenge "global-chess-challenge-2025" \
+    --hf-repo "YOUR_HF_USERNAME/YOUR_MODEL_NAME" \
+    --hf-repo-tag "main" \
+    --prompt-template-path "player_agents/YOUR_PROMPT_TEMPLATE.jinja"
+```
+
 ## FAQ's and known issues
 1. Workshop instructions are available [here](https://catalog.us-east-1.prod.workshops.aws/workshops/bf9d80a3-5e4b-4648-bca8-1d887bb2a9ca/en-US).
 2. If you use the `NousResearch` Llama 3.2 1B, please note you'll need to remove a trailing comma in the model config file. You can do this by using VIM in VSCode. If you do not take this step, you'll get an error for invalid JSON in trying to read the model config in Lab 1. If editing the file through the terminal is a little challenging, you can also download the config file from this repository with the following command:
