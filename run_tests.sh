@@ -13,11 +13,24 @@ NC='\033[0m' # No Color
 echo -e "${GREEN}Neuron Workshop Notebook Testing${NC}"
 echo "=================================="
 
-# Check if we're in the right directory
+# Check if we're in the right directory and navigate if needed
 if [ ! -d "labs" ]; then
-    echo -e "${RED}Error: labs directory not found. Please run from the repository root.${NC}"
-    exit 1
+    # Try to find the neuron-workshops directory
+    if [ -d "neuron-workshops/labs" ]; then
+        echo -e "${YELLOW}Changing to neuron-workshops directory...${NC}"
+        cd neuron-workshops
+    elif [ -d "../labs" ]; then
+        echo -e "${YELLOW}Changing to parent directory...${NC}"
+        cd ..
+    else
+        echo -e "${RED}Error: labs directory not found. Please run from the repository root or parent directory.${NC}"
+        echo -e "${RED}Current directory: $(pwd)${NC}"
+        echo -e "${RED}Looking for: labs/ directory${NC}"
+        exit 1
+    fi
 fi
+
+echo -e "${GREEN}Working directory: $(pwd)${NC}"
 
 # Activate Neuron SDK virtual environment (required)
 NEURON_VENV="/opt/aws_neuronx_venv_pytorch_2_8_nxd_inference/bin/activate"
@@ -75,10 +88,13 @@ echo "Labs directory: $LABS_DIR"
 
 if [ -n "$SPECIFIC_NOTEBOOK" ]; then
     echo -e "${YELLOW}Testing specific notebook: $SPECIFIC_NOTEBOOK${NC}"
-    pytest $PYTEST_ARGS $REPORT_HTML "labs/$SPECIFIC_NOTEBOOK"
+    pytest $PYTEST_ARGS $REPORT_HTML --nbval "labs/$SPECIFIC_NOTEBOOK"
 else
     echo -e "${YELLOW}Testing all notebooks in labs/${NC}"
-    pytest $PYTEST_ARGS $REPORT_HTML labs/
+    echo "Discovering notebooks..."
+    find labs/ -name "*.ipynb" -not -path "*/.ipynb_checkpoints/*" | head -5
+    echo ""
+    pytest $PYTEST_ARGS $REPORT_HTML --nbval labs/
 fi
 
 # Check exit code

@@ -1,10 +1,8 @@
 #!/usr/bin/env python3
 """
-Automated testing for Neuron Workshop notebooks.
-Uses nbval to execute notebooks and validate outputs.
-Assumes Neuron SDK environment is always available.
+Notebook discovery utility for Neuron Workshop testing.
+This file helps with test organization but nbval handles the actual execution.
 """
-import pytest
 from pathlib import Path
 
 # Define notebook timeouts by category
@@ -39,19 +37,6 @@ def get_notebooks():
         notebooks.append((str(notebook_path), timeout))
             
     return notebooks
-
-# Generate test parameters
-notebook_params = get_notebooks()
-
-@pytest.mark.parametrize("notebook_path,timeout", notebook_params)
-def test_notebook_execution(notebook_path, timeout):
-    """
-    Test that notebooks execute without errors.
-    The actual execution is handled by nbval plugin.
-    """
-    # This is a placeholder - nbval handles the actual execution
-    # The timeout parameter is used by pytest-timeout plugin
-    pass
 
 if __name__ == "__main__":
     # Print discovered notebooks for debugging
