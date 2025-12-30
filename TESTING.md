@@ -213,7 +213,7 @@ pwd  # Should end with /neuron-workshops
 ls -la labs/
 
 # Verify paths in notebooks match
-grep -r "/home/ubuntu/neuron-workshops" labs/
+grep -r "/home/ubuntu/build-on-trainium-workshop" labs/
 ```
 
 ### Hardware Issues
