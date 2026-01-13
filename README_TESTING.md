@@ -6,8 +6,8 @@ This repository includes comprehensive testing for all Jupyter notebooks to ensu
 
 ```bash
 # Clone repository
-git clone https://github.com/aws-neuron/build-on-trainium-workshop.git neuron-workshops
-cd neuron-workshops
+git clone https://github.com/aws-neuron/build-on-trainium-workshop.git
+cd build-on-trainium-workshop
 
 # Run all tests
 ./run_tests.sh

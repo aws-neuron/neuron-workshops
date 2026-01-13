@@ -16,9 +16,9 @@ echo "=================================="
 # Check if we're in the right directory and navigate if needed
 if [ ! -d "labs" ]; then
     # Try to find the neuron-workshops directory
-    if [ -d "neuron-workshops/labs" ]; then
-        echo -e "${YELLOW}Changing to neuron-workshops directory...${NC}"
-        cd neuron-workshops
+    if [ -d "build-on-trainium-workshop/labs" ]; then
+        echo -e "${YELLOW}Changing to build-on-trainium-workshop directory...${NC}"
+        cd build-on-trainium-workshop
     elif [ -d "../labs" ]; then
         echo -e "${YELLOW}Changing to parent directory...${NC}"
         cd ..

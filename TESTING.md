@@ -16,11 +16,10 @@ The testing system uses:
 
 1. **AWS Trainium Instance**: trn1.2xlarge or larger
 2. **Neuron SDK**: Pre-installed with virtual environment at `/opt/aws_neuronx_venv_pytorch_2_8_nxd_inference/`
-3. **Repository**: Clone as `neuron-workshops` for correct paths
 
 ```bash
-git clone https://github.com/aws-neuron/build-on-trainium-workshop.git neuron-workshops
-cd neuron-workshops
+git clone https://github.com/aws-neuron/build-on-trainium-workshop.git
+cd build-on-trainium-workshop
 ```
 
 ### Running Tests
