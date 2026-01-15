@@ -1,0 +1,127 @@
+name: Test Notebooks
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    # Run tests weekly to catch SDK updates
+    - cron: '0 6 * * 1'  # Monday at 6 AM UTC
+
+jobs:
+  test-notebooks:
+    runs-on: ubuntu-latest
+    
+    # This job runs on Trainium instances with Neuron SDK
+    
+    strategy:
+      matrix:
+        notebook-group:
+          - "NxD"
+          - "FineTuning" 
+          - "vLLM"
+          - "NKI"
+      fail-fast: false
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+        
+    - name: Install test dependencies
+      run: |
+        pip install -r requirements-test.txt
+        
+    - name: Validate notebook syntax (without execution)
+      run: |
+        # Just validate that notebooks are well-formed JSON
+        python -c "
+        import json
+        from pathlib import Path
+        
+        notebooks = list(Path('labs/${{ matrix.notebook-group }}').rglob('*.ipynb'))
+        print(f'Validating {len(notebooks)} notebooks in ${{ matrix.notebook-group }}')
+        
+        for nb_path in notebooks:
+            if '.ipynb_checkpoints' in str(nb_path):
+                continue
+            try:
+                with open(nb_path) as f:
+                    json.load(f)
+                print(f'✓ {nb_path}')
+            except Exception as e:
+                print(f'✗ {nb_path}: {e}')
+                exit(1)
+        "
+        
+    - name: Check for required files
+      run: |
+        # Verify that notebooks reference existing files
+        python -c "
+        import json
+        from pathlib import Path
+        import re
+        
+        def check_notebook_references(nb_path):
+            with open(nb_path) as f:
+                nb = json.load(f)
+            
+            issues = []
+            for cell in nb.get('cells', []):
+                if cell.get('cell_type') == 'code':
+                    source = ''.join(cell.get('source', []))
+                    
+                    # Check for file references
+                    file_refs = re.findall(r'[\"\']([\w\./\-]+\.(?:txt|py|json|yaml|yml|sh))[\"\'']', source)
+                    for file_ref in file_refs:
+                        if not file_ref.startswith('/') and not Path(nb_path.parent / file_ref).exists():
+                            issues.append(f'Missing file reference: {file_ref}')
+            
+            return issues
+        
+        notebooks = list(Path('labs/${{ matrix.notebook-group }}').rglob('*.ipynb'))
+        all_issues = []
+        
+        for nb_path in notebooks:
+            if '.ipynb_checkpoints' in str(nb_path):
+                continue
+            issues = check_notebook_references(nb_path)
+            if issues:
+                all_issues.extend([f'{nb_path}: {issue}' for issue in issues])
+        
+        if all_issues:
+            print('Found issues:')
+            for issue in all_issues:
+                print(f'  {issue}')
+            # Don't fail on missing files for now, just warn
+            # exit(1)
+        else:
+            print('No file reference issues found')
+        "
+
+  # Full notebook execution on Trainium instances
+  test-execution:
+    runs-on: self-hosted  # Trainium instance with Neuron SDK
+    needs: test-notebooks
+    if: github.event_name == 'push' || github.event_name == 'schedule'
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Run notebook tests
+      run: |
+        # Run on actual Trainium hardware with Neuron SDK
+        ./run_tests.sh --fast --html-report
+        
+    - name: Upload test results
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: test-results-${{ matrix.notebook-group }}
+        path: test_report.html

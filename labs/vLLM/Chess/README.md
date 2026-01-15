@@ -53,7 +53,7 @@ Learn how to:
 
 ```bash
 # Navigate to lab directory
-cd /home/ubuntu/environment/neuron-workshops/labs/vLLM/Chess
+cd /home/ubuntu/build-on-trainium-workshop/labs/vLLM/Chess
 
 #install stockfish
 sudo apt install stockfish
