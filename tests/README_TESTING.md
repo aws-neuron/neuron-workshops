@@ -1,6 +1,8 @@
 # Notebook Testing Setup
 
-This repository includes comprehensive testing for all Jupyter notebooks to ensure they work correctly after SDK updates and changes.
+This repository includes testing for all Jupyter notebooks to ensure they work correctly after SDK updates and changes.
+
+**this is a work in progress and most tests will fail.  Additionally, the order of tests matters if they install components**
 
 ## Quick Start
 
