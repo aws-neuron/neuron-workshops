@@ -130,7 +130,7 @@ Chess/
         └── start_vllm_python.py       # Python server starter
 ```
 
-### 3. Analyze Model Performance
+## Analyze Model Performance
 
 Tournament results are saved to `tournament.json` with detailed metrics:
 
@@ -150,6 +150,86 @@ print(f"Win Rate: {agent_stats['wins'] / agent_stats['games'] * 100:.1f}%")
 metrics = results['engine_metrics']['vllm']
 print(f"Move Accuracy: {metrics['accuracy_pct']:.1f}%")
 print(f"Avg Centipawn Loss: {metrics['acpl']:.1f}")
+```
+
+## How to Make a Submission
+
+This guide walks you through the process of submitting your chess agent to the Global Chess Challenge 2025.
+
+### Prerequisites
+
+Before making a submission, ensure you have:
+
+- ✅ Accepted the Challenge Rules on the challenge page by clicking the Participate button
+- ✅ Installed AIcrowd CLI (included in requirements.txt)
+- ✅ Logged in to AIcrowd via the CLI
+- ✅ Prepared your model on Hugging Face
+- ✅ Created a prompt template for your agent
+
+### Step 1: Login to AIcrowd
+
+First, authenticate with AIcrowd:
+
+```bash
+aicrowd login
+```
+
+You'll be prompted to enter your AIcrowd API key. You can find your API key at: https://www.aicrowd.com/participants/me
+
+### Step 2: Prepare Your Model on Hugging Face
+
+Your model must be hosted on Hugging Face. You can use:
+
+- A public model (e.g., Qwen/Qwen3-0.6B)
+- Your own fine-tuned model
+- A private/gated model (requires additional setup - see below)
+
+#### Using Private or Gated Models
+
+If your model is private or gated, you need to grant AIcrowd access. See docs/huggingface-gated-models.md for detailed instructions.
+
+### Step 3: Create Your Prompt Template
+
+Your prompt template should be a Jinja file that formats the chess position and legal moves for your model. Examples are available in the player_agents/ directory:
+
+- `llm_agent_prompt_template.jinja` - For general LLM agents
+- `sft_agent_prompt_template.jinja` - For supervised fine-tuned agents
+- `random_agent_prompt_template.jinja` - Minimal template example
+
+### Step 4: Configure Your Submission
+
+Edit the `aicrowd_submit.sh` file with your submission details:
+
+```bash
+# Configuration variables
+CHALLENGE="global-chess-challenge-2025"
+HF_REPO="YOUR_HF_USERNAME/YOUR_MODEL_NAME"  # e.g., "Qwen/Qwen3-0.6B"
+HF_REPO_TAG="main"  # or specific branch/tag
+PROMPT_TEMPLATE="player_agents/YOUR_PROMPT_TEMPLATE.jinja"
+```
+
+**Configuration Parameters:**
+- **CHALLENGE**: The challenge identifier (keep as global-chess-challenge-2025)
+- **HF_REPO**: Your Hugging Face model repository (format: username/model-name)
+- **HF_REPO_TAG**: The branch or tag to use (typically main)
+- **PROMPT_TEMPLATE**: Path to your prompt template file
+
+### Step 5: Submit Your Model
+
+Once configured, run the submission script:
+
+```bash
+bash aicrowd_submit.sh
+```
+
+Or submit directly using the AIcrowd CLI:
+
+```bash
+aicrowd submit-model \
+    --challenge "global-chess-challenge-2025" \
+    --hf-repo "YOUR_HF_USERNAME/YOUR_MODEL_NAME" \
+    --hf-repo-tag "main" \
+    --prompt-template-path "player_agents/YOUR_PROMPT_TEMPLATE.jinja"
 ```
 
 ## Troubleshooting
