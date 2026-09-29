@@ -1,6 +1,6 @@
 # Neuron Workshops
 
-In this workshop you will learn how to develop support for a new model with [NeuronX Distributed Inference](https://awsdocs-neuron.readthedocs-hosted.com/en/latest/libraries/nxd-inference/nxdi-overview.html#nxdi-overview), through the context of Llama 3.2 1B. You will also learn how to write your own kernel to directly program the accelerated hardware with the [Neuron Kernel Interface](https://awsdocs-neuron.readthedocs-hosted.com/en/latest/general/nki/index.html). These tools will help you design your research proposals and experiments on Trainium.
+In this workshop you will learn how to develop support for a new model with [NeuronX Distributed Inference](https://awsdocs-neuron.readthedocs-hosted.com/en/latest/libraries/nxd-inference/index.html), through the context of Llama 3.2 1B. You will also learn how to write your own kernel to directly program the accelerated hardware with the [Neuron Kernel Interface](https://awsdocs-neuron.readthedocs-hosted.com/en/latest/general/nki/index.html). These tools will help you design your research proposals and experiments on Trainium.
 
 It also includes an end-to-end example of using Hugging Face Optimum Neuron to fine-tune and host a small language model with Amazon SageMaker.
 
@@ -39,7 +39,7 @@ At the time of writing, this workshop uses a trn1.2xlarge instance with an on-de
 ## FAQ's and known issues
 1. Workshop instructions are available [here](https://catalog.us-east-1.prod.workshops.aws/workshops/bf9d80a3-5e4b-4648-bca8-1d887bb2a9ca/en-US).
 2. If you use the `NousResearch` Llama 3.2 1B, please note you'll need to remove a trailing comma in the model config file. You can do this by using VIM in VSCode. If you do not take this step, you'll get an error for invalid JSON in trying to read the model config in Lab 1. If editing the file through the terminal is a little challenging, you can also download the config file from this repository with the following command:
-   `!wget https://github.com/aws-neuron/build-on-trainium-workshop/blob/main/labs/generation_config.json -P /home/ec2-user/environment/models/llama/`
+   `!wget https://raw.githubusercontent.com/aws-neuron/neuron-workshops/main/labs/NxD/generation_config.json -P /home/ec2-user/environment/models/llama/`
 4. Jupyter kernels can hold on to the NeuronCores as a Python process even after your cell has completed. This can then cause issues when you try to run a new notebook, and sometimes when you try to run another cell. If you encounter a `NeuronCore not found` or similar error statement, please just restart your Jupyter kernel and/or shut down kernels from previous sessions. You can also restart the instance through the EC2 console. Once your node is back online, you can always check the availability of the NeuronCores with `neuron-ls`.
 5. Want to see how to integrate NKI with NxD? Check out our `nki-llama` [here](https://github.com/aws-samples/nki-llama).
 
